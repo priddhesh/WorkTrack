@@ -4,7 +4,7 @@ const mysql = require('mysql');
 require('dotenv').config()
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const conn = mysql.createConnection({
@@ -23,6 +23,10 @@ app.get('/addEmployee', (req, res) => {
     res.sendFile(__dirname + '/frontend/addEmployee.html')
 });
 
+app.get('/dashboard', (req, res) => {
+    res.sendFile(__dirname + '/frontend/employeeDashboard.html')
+});
+
 app.post('/add_employee', (req, res) => {
     let username = req.body.username;
     let email = req.body.email;
@@ -34,9 +38,23 @@ app.post('/add_employee', (req, res) => {
         if (err) throw err;
         console.log('Data inserted');
     });
-    res.sendFile(__dirname + '/frontend/addEmployee.html');
+    res.redirect('/addEmployee');
 });
 
-app.listen('3000', () => {  
+app.post('/add_task', (req, res) => {
+    let desc = req.body.desc;
+    let type = req.body.type;
+    let timedate = req.body.st_time;
+    let time_taken = req.body.time_taken;
+    let st_time = `${timedate.split("T")[1]}:00`;
+    let date = timedate.split("T")[0];
+    conn.query(`INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username) VALUES('${desc}','${type}','${date}','${st_time}','${time_taken}','')`, (err, rows) => {
+        if (err) throw err;
+        console.log('Data inserted');
+    });
+    res.redirect('/dashboard');
+});
+
+app.listen('3000', () => {
     console.log('Server started on port 3000');
 });
