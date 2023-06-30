@@ -25,4 +25,4 @@ const authenticate = async (username, password) => {
 } 
 
 
-module.exports = { authenticate }
+module.exports = { authenticate, pool }
