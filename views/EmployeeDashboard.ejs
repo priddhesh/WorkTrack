@@ -59,6 +59,50 @@
             </div>
         </div>
     </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Contact</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Join Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let i=0; if(data.length>0)
+                    {
+                    data.forEach(function(item){
+                    i++;
+                    %>
+                    <tr>
+                        <th scope="row">
+                            <%= i %>
+                        </th>
+                        <td>
+                            <%= item.task_description %>
+                        </td>
+                        <td>
+                            <%= item.task_type %>
+                        </td>
+                        <td>
+                            <%= item.start_time %>
+                        </td>
+                        <td>
+                            <%= item.time_taken %>
+                        </td>
+                        <td>
+                            <%= item.date %>
+                        </td>
+                    </tr>
+                    <% }) }else{ %>
+                        <tr>
+                            <td colspan="5">No data found</td>
+                        </tr>
+                        <% } %>
+            </tbody>
+        </table>
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
