@@ -4,6 +4,9 @@ const mysql = require('mysql');
 require('dotenv').config()
 var bodyParser = require('body-parser');
 
+app.set('view engine', 'ejs');
+app.use('/scripts', express.static(__dirname + '/scripts'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -20,11 +23,38 @@ conn.connect((err) => {
 });
 
 app.get('/addEmployee', (req, res) => {
-    res.sendFile(__dirname + '/frontend/addEmployee.html')
+    conn.query(`SELECT * from employee_info`, (err, data) => {
+        if (err) {
+            throw err;
+        }
+        else {
+            res.render('AdminDashboard',{data:data});
+        }
+    });
 });
 
 app.get('/dashboard', (req, res) => {
-    res.sendFile(__dirname + '/frontend/employeeDashboard.html')
+    conn.query(`SELECT * from tasks`, (err, data) => {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log(data);
+            res.render('EmployeeDashboard',{data:data});
+        }
+    });
+});
+
+app.get('/updateEmployee', (req, res) => {
+    let username = "mayur";
+    conn.query(`SELECT * from employee_info WHERE username='${username}'`, (err, data) => {
+        if (err) {
+            throw err;
+        }
+        else {
+            res.render('UpdateEmployee', {data: data});
+        }
+    });
 });
 
 app.post('/add_employee', (req, res) => {
@@ -35,10 +65,47 @@ app.post('/add_employee', (req, res) => {
     let join_date = req.body.join_date;
     let password = req.body.password;
     conn.query(`INSERT INTO  employee_info(username,email,contact,dept,join_date,password) VALUES('${username}','${email}','${contact}','${dept}','${join_date}','${password}')`, (err, rows) => {
-        if (err) throw err;
-        console.log('Data inserted');
+        if (err)
+        {
+            throw err;
+        }
+        else{
+            console.log('Data updated');
+            res.redirect('/addEmployee');
+        }
     });
-    res.redirect('/addEmployee');
+});
+
+app.post('/update_employee', (req, res) => {
+    let username = req.body.username;
+    let email = req.body.email;
+    let contact = req.body.contact;
+    let dept = req.body.department;
+    let checkval = req.body.checkval;
+    let password = req.body.new_password;
+    console.log(contact);
+    if(checkval==undefined){
+        conn.query(`UPDATE employee_info SET username = '${username}', dept = '${dept}', contact= '${contact}' WHERE email = '${email}';`, (err, rows) => {
+        if (err)
+        {
+            throw err;
+        }
+        else{
+            console.log('Data updated');
+            res.redirect('/updateEmployee');
+        }
+    });
+}else{
+        conn.query(`UPDATE employee_info SET username = '${username}',  dept = '${dept}', contact= '${contact}', password = '${password}' WHERE email = '${email}';`, (err, rows) => {
+            if (err) {
+                throw err;
+            }
+            else {
+                console.log('Data updated');
+                res.redirect('/updateEmployee');
+            }
+        });
+}
 });
 
 app.post('/add_task', (req, res) => {
@@ -53,6 +120,14 @@ app.post('/add_task', (req, res) => {
         console.log('Data inserted');
     });
     res.redirect('/dashboard');
+});
+
+app.post('/deactivate', (req, res) => {
+    let email = req.body.email;
+    conn.query(`DELETE FROM employee_info WHERE email='${email}'`, (err, rows) => {
+        if (err) throw err;
+    });
+    res.redirect('/addEmployee');
 });
 
 app.listen('3000', () => {
