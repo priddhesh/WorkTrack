@@ -2,21 +2,30 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const ejs = require('ejs')
+const session = require('express-session')
 const {authenticate, pool} = require('./database.js')
+const { log } = require('console')
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.set('view engine', 'ejs')
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}))
 
 app.get('/', (req, res) => {
   res.render('login')
 })
 
 app.post('/', async (req, res) => {
-  var { username, password } = req.body
-  const result = await authenticate(username, password)
+  var { username, password, role } = req.body
+  console.log(username, password, role)
+  const result = await authenticate(username, password, role)
   console.log(result)
   if(result) {
+    req.session.username = username
     res.send('success')
   }
   else {

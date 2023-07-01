@@ -9,18 +9,31 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_USER
 }).promise()
 
-const authenticate = async (username, password) => {
+const authenticate = async (username, password, role) => {
+    if(role === 'Admin') {
+        try {
+            const [result] = await pool.query(`SELECT * FROM admin_info WHERE username = ? AND password = ?`, [username, password])
+            console.log(result)
+            
+            if(result.length > 0) return true // user found
+            else return false // user not found
 
-    try {
-        const [result] = await pool.query(`SELECT * FROM employee_info WHERE username = ? AND password = ?`, [username, password])
-        console.log(result)
-        
-        if(result.length > 0) return true // user found
-        else return false // user not found
+        }
+        catch(err) {
+            console.log(err)
+        }
+    } else {
+        try {
+            const [result] = await pool.query(`SELECT * FROM employee_info WHERE username = ? AND password = ?`, [username, password])
+            console.log(result)
+            
+            if(result.length > 0) return true // user found
+            else return false // user not found
 
-    }
-    catch(err) {
-        console.log(err)
+        }
+        catch(err) {
+            console.log(err)
+        }
     }
 } 
 
