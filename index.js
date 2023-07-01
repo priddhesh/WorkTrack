@@ -28,7 +28,7 @@ app.get('/addEmployee', (req, res) => {
             throw err;
         }
         else {
-            res.render('AdminDashboard',{data:data});
+            res.render('AdminDashboard', { data: data });
         }
     });
 });
@@ -39,8 +39,7 @@ app.get('/dashboard', (req, res) => {
             throw err;
         }
         else {
-            console.log(data);
-            res.render('EmployeeDashboard',{data:data});
+            res.render('EmployeeDashboard', { data: data });
         }
     });
 });
@@ -52,7 +51,7 @@ app.get('/updateEmployee', (req, res) => {
             throw err;
         }
         else {
-            res.render('UpdateEmployee', {data: data});
+            res.render('UpdateEmployee', { data: data });
         }
     });
 });
@@ -65,11 +64,10 @@ app.post('/add_employee', (req, res) => {
     let join_date = req.body.join_date;
     let password = req.body.password;
     conn.query(`INSERT INTO  employee_info(username,email,contact,dept,join_date,password) VALUES('${username}','${email}','${contact}','${dept}','${join_date}','${password}')`, (err, rows) => {
-        if (err)
-        {
+        if (err) {
             throw err;
         }
-        else{
+        else {
             console.log('Data updated');
             res.redirect('/addEmployee');
         }
@@ -83,19 +81,17 @@ app.post('/update_employee', (req, res) => {
     let dept = req.body.department;
     let checkval = req.body.checkval;
     let password = req.body.new_password;
-    console.log(contact);
-    if(checkval==undefined){
+    if (checkval == undefined) {
         conn.query(`UPDATE employee_info SET username = '${username}', dept = '${dept}', contact= '${contact}' WHERE email = '${email}';`, (err, rows) => {
-        if (err)
-        {
-            throw err;
-        }
-        else{
-            console.log('Data updated');
-            res.redirect('/updateEmployee');
-        }
-    });
-}else{
+            if (err) {
+                throw err;
+            }
+            else {
+                console.log('Data updated');
+                res.redirect('/updateEmployee');
+            }
+        });
+    } else {
         conn.query(`UPDATE employee_info SET username = '${username}',  dept = '${dept}', contact= '${contact}', password = '${password}' WHERE email = '${email}';`, (err, rows) => {
             if (err) {
                 throw err;
@@ -105,7 +101,7 @@ app.post('/update_employee', (req, res) => {
                 res.redirect('/updateEmployee');
             }
         });
-}
+    }
 });
 
 app.post('/add_task', (req, res) => {
@@ -128,6 +124,36 @@ app.post('/deactivate', (req, res) => {
         if (err) throw err;
     });
     res.redirect('/addEmployee');
+});
+
+app.post('/deleteTask', (req, res) => {
+    let desc = req.body.desc;
+    let type = req.body.type;
+    let st_time = req.body.st_time;
+    let time = req.body.time;
+    conn.query(`DELETE FROM tasks WHERE (task_description='${desc}') AND (task_type='${type}') AND (start_time='${st_time}')`, (err, rows) => {
+        if (err) throw err;
+        console.log('Data deleted');
+    });
+    res.redirect('/dashboard');
+});
+
+app.post('/updateTask', (req, res) => {
+    let desc = req.body.udesc;
+    let type = req.body.utype;
+    let st_time = req.body.ust_time;
+    let time_taken = req.body.utime_taken;
+    let prevDesc = req.body.prevDesc;
+    console.log(prevDesc);
+    conn.query(`UPDATE tasks SET task_description = '${desc}',  task_type = '${type}', start_time= '${st_time}', time_taken = '${time_taken}' WHERE task_description = '${prevDesc}';`, (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        else {
+            console.log('Task updated');
+        }
+    });
+    res.redirect('/dashboard');
 });
 
 app.listen('3000', () => {
