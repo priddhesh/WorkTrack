@@ -13,7 +13,7 @@ const conn = mysql.createConnection({
 router.use(adminAuth)
 
 router
-  .route('/add_employee')
+  .route('/addEmployee')
   .get((req, res) => {
     conn.query(`SELECT * from employee_info`, (err, data) => {
       if (err) {
@@ -35,51 +35,7 @@ router
       if (err) throw err;
       console.log('Data inserted');
     });
-    res.redirect('/add_employee');
-  });
-
-router
-  .route('/update_employee')
-  .get((req, res) => {
-    let username = "mayur";
-    conn.query(`SELECT * from employee_info WHERE username='${username}'`, (err, data) => {
-      if (err) {
-        throw err;
-      }
-      else {
-        res.render('UpdateEmployee', { data: data });
-      }
-    });
-  })
-  .post((req, res) => {
-    let username = req.body.username;
-    let email = req.body.email;
-    let contact = req.body.contact;
-    let dept = req.body.department;
-    let checkval = req.body.checkval;
-    let password = req.body.new_password;
-    console.log(contact);
-    if (checkval === undefined) {
-      conn.query(`UPDATE employee_info SET username = '${username}', dept = '${dept}', contact= '${contact}' WHERE email = '${email}';`, (err, rows) => {
-        if (err) {
-          throw err;
-        }
-        else {
-          console.log('Data updated');
-          res.redirect('/updateEmployee');
-        }
-      });
-    } else {
-      conn.query(`UPDATE employee_info SET username = '${username}',  dept = '${dept}', contact= '${contact}', password = '${password}' WHERE email = '${email}';`, (err, rows) => {
-        if (err) {
-          throw err;
-        }
-        else {
-          console.log('Data updated');
-          res.redirect('/updateEmployee');
-        }
-      });
-    }
+    res.redirect('/addEmployee');
   });
 
 router.post('/deactivate', (req, res) => {

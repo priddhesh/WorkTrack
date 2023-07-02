@@ -11,6 +11,9 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  cookie : {
+    maxAge: 1000 * 60 * 60
+  },
 }))
 
 app.use(express.urlencoded({ extended: true }))
@@ -28,7 +31,7 @@ app
   if (result) {
     req.session.username = username
     req.session.role = role
-    if(role === 'Admin') res.redirect('/admin/add_employee')
+    if(role === 'Admin') res.redirect('/admin/addEmployee')
     else res.redirect('/employee/dashboard')
   }
   else {

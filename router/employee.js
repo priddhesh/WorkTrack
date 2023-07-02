@@ -2,6 +2,13 @@ const express = require('express')
 const router = express.Router()
 const mysql = require('mysql2')
 const empAuth = require('./empAuth')
+const { 
+  getEmployeeTasks,
+  getCurrentDayTasks,
+  setEmployeeTasks, 
+  getEmployeeData,
+  updateEmployeeData, 
+} = require('../database')
 
 const conn = mysql.createConnection({
   host: process.env.MYSQL_URI,
@@ -14,31 +21,62 @@ router.use(empAuth)
 
 router
   .route('/dashboard')
-  .get((req, res) => {
-    conn.query(`SELECT * from tasks`, (err, data) => {
-      if (err) {
-        throw err;
-      }
-      else {
-        console.log(data);
-        res.render('EmployeeDashboard', { data: data });
-      }
-    });
+  .get(async (req, res) => {
+
+    let username = req.session.username
+    const data = await getCurrentDayTasks(username)
+    console.log(data)
+    res.render('EmployeeDashboard', { data: data ? data : {}, tasks: {} })
+  })
+  .post(async (req, res) => {
+    let { find_task_date } = req.body
+    let { username } = req.session
+    let tasks = await getEmployeeTasks(find_task_date, username)
+    let data = await getCurrentDayTasks(username)
+    console.log(tasks)
+    if(tasks === null) {
+      res.redirect('/employee/dashboard')
+    } else {
+      res.render('EmployeeDashboard', { data: data, tasks: tasks })
+    }
+  })
+
+router
+  .route('/updateEmployee')
+  .get(async (req, res) => {
+
+    let { username } = req.session
+    const data = await getEmployeeData(username)
+    res.render('updateEmployee', { data: data })
+
+  })
+  .post(async (req, res) => {
+
+    let updatedData = req.body;
+
+    await updateEmployeeData(updatedData)
+    req.session.username = req.body.username
+    console.log(req.session.username)
+    res.redirect('/employee/updateEmployee')
   });
 
 router
-  .route('/add_task')
-  .post((req, res) => {
-    let desc = req.body.desc;
-    let type = req.body.type;
-    let timedate = req.body.st_time;
-    let time_taken = req.body.time_taken;
-    let st_time = `${timedate.split("T")[1]}:00`;
-    let date = timedate.split("T")[0];
-    conn.query(`INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username) VALUES('${desc}','${type}','${date}','${st_time}','${time_taken}','')`, (err, rows) => {
-      if (err) throw err;
-      console.log('Data inserted');
-    });
+  .route('/addTask')
+  .post(async (req, res) => {
+
+    let timedate = req.body.st_time
+
+    let data = {
+      username: req.session.username, 
+      desc: req.body.desc,
+      type: req.body.type,
+      time_taken: req.body.time_taken,
+      st_time: `${timedate.split("T")[1]}:00`,
+      date: timedate.split("T")[0],
+    }
+
+    await setEmployeeTasks(data)
+
     res.redirect('/employee/dashboard');
   });
 

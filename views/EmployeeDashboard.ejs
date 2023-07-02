@@ -11,9 +11,12 @@
 </head>
 
 <body>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Add Task
-    </button>
+    <div class="">
+        <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#exampleModal">
+            Add Task
+        </button>
+        <a href="/employee/updateEmployee" class="btn btn-secondary">Update Profile</a>
+    </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -26,7 +29,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/employee/add_task" method="post">
+                    <form action="/employee/addTask" method="post">
                         <div class="form-group">
                             <label>Task Description:</label>
                             <input type="text" class="form-control" id="desc" name="desc"
@@ -59,21 +62,94 @@
             </div>
         </div>
     </div>
-        <table class="table">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Task Description</th>
+                <th scope="col">Type of Work</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">Time Taken</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% let j=0; if(data.length>0)
+                {
+                data.forEach(function(item){
+                j++;
+                %>
+                <tr>
+                    <th scope="row">
+                        <%= j %>
+                    </th>
+                    <td>
+                        <%= item.task_description %>
+                    </td>
+                    <td>
+                        <%= item.task_type %>
+                    </td>
+                    <td>
+                        <%= item.start_time %>
+                    </td>
+                    <td>
+                        <%= item.time_taken %>
+                    </td>
+                    <td>
+                        <%= item.date.toDateString() %>
+                    </td>
+                </tr>
+                <% }) }else{ %>
+                    <tr>
+                        <td colspan="5">No data found</td>
+                    </tr>
+                    <% } %>
+        </tbody>
+    </table>
+
+    <div class="container mt-5 text-center">
+        <form action="/employee/dashboard" method="post">
+            <div class="form-group row">
+                <div class="col-1 justify-content-center">
+                    <p class="fs-2 mt-2">Date :</p>
+                </div>
+                <input id="find_task" name="find_task_date" type="date" class="form-control col-5">
+                <button type="submit" class="btn btn-info col-2 ml-2">View previous tasks</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center m-3 p-3">
+        <% if(tasks.length>0) { %>
+        <h2>
+            Tasks on <%= tasks[0].date.toDateString() %>    
+        </h2>    
+        <% } else { %>
+        <h2></h2>
+        <% } %>
+    </div>
+    <table class="table">
+        <% if(tasks.length>0) { %>
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Department</th>
-                    <th scope="col">Join Date</th>
+                    <th scope="col">Task Description</th>
+                    <th scope="col">Type of Work</th>
+                    <th scope="col">Start Time</th>
+                    <th scope="col">Time Taken</th>
+                    <th scope="col">Date</th>
                 </tr>
             </thead>
+            <% } else { %>
+            <thead>
+                <tr></tr>
+            </thead>
+            <% } %>
             <tbody>
-                <% let i=0; if(data.length>0)
+                <% let i=0; if(tasks.length>0)
                     {
-                    data.forEach(function(item){
+                    tasks.forEach(function(task){
                     i++;
                     %>
                     <tr>
@@ -81,28 +157,31 @@
                             <%= i %>
                         </th>
                         <td>
-                            <%= item.task_description %>
+                            <%= task.task_description %>
                         </td>
                         <td>
-                            <%= item.task_type %>
+                            <%= task.task_type %>
                         </td>
                         <td>
-                            <%= item.start_time %>
+                            <%= task.start_time %>
                         </td>
                         <td>
-                            <%= item.time_taken %>
+                            <%= task.time_taken %>
                         </td>
                         <td>
-                            <%= item.date.toLocaleDateString() %>
+                            <%= task.date.toLocaleDateString() %>
                         </td>
                     </tr>
                     <% }) }else{ %>
                         <tr>
-                            <td colspan="5">No data found</td>
+                            <td colspan="5"></td>
                         </tr>
                         <% } %>
             </tbody>
-        </table>
+    </table>
+
+
+
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
