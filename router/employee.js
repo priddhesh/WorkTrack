@@ -2,12 +2,12 @@ const express = require('express')
 const router = express.Router()
 const mysql = require('mysql2')
 const empAuth = require('./empAuth')
-const { 
+const {
   getEmployeeTasks,
   getCurrentDayTasks,
-  setEmployeeTasks, 
+  setEmployeeTasks,
   getEmployeeData,
-  updateEmployeeData, 
+  updateEmployeeData,
 } = require('../database')
 
 const conn = mysql.createConnection({
@@ -34,7 +34,7 @@ router
     let tasks = await getEmployeeTasks(find_task_date, username)
     let data = await getCurrentDayTasks(username)
     console.log(tasks)
-    if(tasks === null) {
+    if (tasks === null) {
       res.redirect('/employee/dashboard')
     } else {
       res.render('EmployeeDashboard', { data: data, tasks: tasks })
@@ -67,7 +67,7 @@ router
     let timedate = req.body.st_time
 
     let data = {
-      username: req.session.username, 
+      username: req.session.username,
       desc: req.body.desc,
       type: req.body.type,
       time_taken: req.body.time_taken,
@@ -80,5 +80,46 @@ router
     res.redirect('/employee/dashboard');
   });
 
+router
+  .route('/deleteTask')
+  .post((req, res) => {
+    let desc = req.body.desc;
+    let type = req.body.type;
+    let st_time = req.body.st_time;
+    let time = req.body.time;
+    console.log(desc, type, st_time, time)
+    conn.query(`DELETE FROM tasks WHERE (task_description='${desc}') AND (task_type='${type}') AND (start_time='${st_time}')`, (err, rows) => {
+      if (err) throw err;
+      console.log('Data deleted');
+    });
+    res.redirect('/employee/dashboard');
+  });
+
+router
+  .route('/updateTask')
+  .post((req, res) => {
+    let desc = req.body.udesc;
+    let type = req.body.utype;
+    let st_time = req.body.ust_time;
+    let time_taken = req.body.utime_taken;
+    let prevDesc = req.body.prevDesc;
+    console.log(time_taken)
+    conn.query(`UPDATE tasks SET task_description = '${desc}',  task_type = '${type}', start_time= '${st_time}', time_taken = '${time_taken}' WHERE task_description = '${prevDesc}';`, (err, rows) => {
+      if (err) {
+        throw err;
+      }
+      else {
+        console.log('Task updated');
+      }
+    });
+    res.redirect('/employee/dashboard');
+  });
+
+router 
+  .route('/logout')
+  .get((req, res) => {
+    req.session.destroy()
+    res.redirect('/')
+  })
 
 module.exports = router
