@@ -1,4 +1,5 @@
 const express = require('express');
+var nodemailer = require('nodemailer');
 const app = express();
 const mysql = require('mysql');
 require('dotenv').config()
@@ -34,12 +35,36 @@ app.get('/addEmployee', (req, res) => {
 });
 
 app.get('/dashboard', (req, res) => {
-    conn.query(`SELECT * from tasks`, (err, data) => {
+    let todayDate = new Date()
+    todayDate = todayDate.toISOString().split('T')[0]
+
+    conn.query(`SELECT * from tasks WHERE date='${todayDate}'`, (err, data) => {
         if (err) {
             throw err;
         }
         else {
-            res.render('EmployeeDashboard', { data: data });
+            conn.query(`select time_taken from tasks where  task_type='Work' AND date='${todayDate}';`, (err, data1) => {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    conn.query(`select time_taken from tasks where  task_type='Meeting' AND date='${todayDate}';`, (err, data2) => {
+                        if (err) {
+                            throw err;
+                        }
+                        else {
+                            conn.query(`select time_taken from tasks where  task_type='Break' AND date='${todayDate}';`, (err, data3) => {
+                                if (err) {
+                                    throw err;
+                                }
+                                else {
+                                    res.render('EmployeeDashboard', { data: data, data1: data1, data2: data2, data3: data3 });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         }
     });
 });
@@ -68,6 +93,29 @@ app.post('/add_employee', (req, res) => {
             throw err;
         }
         else {
+            var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.PASS
+                }
+            });
+
+            var mailOptions = {
+                from: process.env.EMAIL,
+                to: `${email}`,
+                subject: 'Login Credentials',
+                text: `Your login credentials are as follows:\nUsername: ${username}  '\nPassword:  ${password} '\n\nRegards,\nAdmin`
+            }
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response)
+                }
+            })
+
             console.log('Data updated');
             res.redirect('/addEmployee');
         }
@@ -122,8 +170,32 @@ app.post('/deactivate', (req, res) => {
     let email = req.body.email;
     conn.query(`DELETE FROM employee_info WHERE email='${email}'`, (err, rows) => {
         if (err) throw err;
+        else{
+            var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.PASS
+                }
+            });
+
+            var mailOptions = {
+                from: process.env.EMAIL,
+                to: `${email}`,
+                subject: 'Account Deactivated',
+                text: `Your account has been deactivated by the admin.\n\nRegards,\nAdmin`
+            }
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response)
+                }
+            })
+            res.redirect('/addEmployee');
+        }
     });
-    res.redirect('/addEmployee');
 });
 
 app.post('/deleteTask', (req, res) => {
@@ -144,7 +216,6 @@ app.post('/updateTask', (req, res) => {
     let st_time = req.body.ust_time;
     let time_taken = req.body.utime_taken;
     let prevDesc = req.body.prevDesc;
-    console.log(prevDesc);
     conn.query(`UPDATE tasks SET task_description = '${desc}',  task_type = '${type}', start_time= '${st_time}', time_taken = '${time_taken}' WHERE task_description = '${prevDesc}';`, (err, rows) => {
         if (err) {
             throw err;

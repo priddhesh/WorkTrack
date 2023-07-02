@@ -10,7 +10,7 @@ function test()
 }
 function update(e)
 {
-  let val = e[1];
+  let val = e.substring(1);
   let desc =  document.getElementById(`desc${val}`).innerText;
   let type = document.getElementById(`type${val}`).innerText;
   let st_time = document.getElementById(`st_time${val}`).innerText;
