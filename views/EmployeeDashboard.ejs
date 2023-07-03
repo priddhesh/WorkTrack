@@ -158,10 +158,10 @@
                                                     class="form-control">
                                             </div>
                                             <div style="display: none;" class="form-group">
-                                                <input type="text" class="form-control" id="prevdesc<%=j%>"
-                                                    name="prevDesc">
+                                                <input type="text" class="form-control" id="prevSt_time<%=j%>"
+                                                    name="prevSt_time">
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            <button type="submit" class="btn btn-primary">Edit</button>
                                         </form>
                                     </div>
                                 </div>
@@ -237,20 +237,83 @@
                                 <th scope="row">
                                     <%= i %>
                                 </th>
-                                <td>
+                                <td id="prevDesc-<%=i%>">
                                     <%= task.task_description %>
                                 </td>
-                                <td>
+                                <td id="prevType-<%=i%>">
                                     <%= task.task_type %>
                                 </td>
-                                <td>
+                                <td id="prevSt_time-<%=i%>">
                                     <%= task.start_time %>
                                 </td>
-                                <td>
+                                <td id="prevTime-<%=i%>">
                                     <%= task.time_taken %>
                                 </td>
+                                <td id="prevDate-<%=i%>">
+                                    <%= task.date.toDateString() %>
+                                </td>
                                 <td>
-                                    <%= task.date.toLocaleDateString() %>
+
+                                    <button onclick="edit(this.id)" id="<%=i%>" type="submit" class="btn btn-primary"
+                                        data-toggle="modal" data-target=".prevDescModal<%=i%>">Update</button>
+
+                                    <div class="modal fade prevDescModal<%=i%>" tabindex="-1" role="dialog"
+                                        aria-labelledby="myLargeModalLabel1" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="myLargeModalLabel">Update Task</h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">x</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="/employee/updateTask" method="post">
+                                                        <div class="form-group">
+                                                            <label>Task Description:</label>
+                                                            <input type="text" class="form-control"
+                                                                id="modalVisiblePrevDesc-<%=i%>" name="newPrevDesc">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="inputState">Task Type:</label>
+                                                            <select name="prevType" id="modalPrevType-<%=i%>"
+                                                                class="form-control">
+                                                                <option selected>Choose...</option>
+                                                                <option>Break</option>
+                                                                <option>Work</option>
+                                                                <option>Meeting</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Start Time:</label>
+                                                            <input id="modalNewPrevSt_time-<%=i%>" name="newPrevSt_time"
+                                                                type="time" class="form-control">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Time taken(in mins):</label>
+                                                            <input id="modalPrevTime-<%=i%>" name="prevTime" type="text"
+                                                                class="form-control">
+                                                        </div>
+                                                        <div style="display: none;" class="form-group">
+                                                            <input id="modalPrevDate-<%=i%>" name="prevDate" type="text"
+                                                                class="form-control">
+                                                        </div>
+                                                        <div style="display: none;" class="form-group">
+                                                            <input type="text" class="form-control"
+                                                                id="modalOldPrevSt_time-<%=i%>" name="oldPrevSt_time">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <button onclick="del(this.id)" id="<%=i%>" type="submit"
+                                        class="btn btn-danger">Delete</button>
                                 </td>
                             </tr>
                             <% }) }else{ %>
@@ -261,21 +324,28 @@
                     </tbody>
     </table>
 
-
+    <div style="display: none;">
+        <form id="deletePrevData" action="/employee/deleteTask" method="post">
+            <input type="text" id="pddesc" name="desc" />
+            <input type="text" id="pdtype" name="type" />
+            <input type="time" id="pdst_time" name="st_time" />
+            <input type="text" id="pdtime" name="time" />
+            <input type="text" id="pddate" name="date" />
+        </form>
+    </div>
 
     <div style="display: none;">
         <% let work=0; let meeting=0; let brk=0; if (true) { %>
             <% data1.forEach(function(data) { %>
-            <% work +=data.time_taken; %>
+                <% work +=data.time_taken; %>
             <% }); %>
             <% data2.forEach(function(data) { %>
-            <% meeting +=data.time_taken; %>
+                <% meeting +=data.time_taken; %>
             <% }); %>
             <% data3.forEach(function(data) { %>
-            <% brk +=data.time_taken; %>
+                <% brk +=data.time_taken; %>
             <% }); %>
         <%} else { %>
-
         <% } %>
         <p id="work">
             <%=work %>

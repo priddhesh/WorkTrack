@@ -8,7 +8,9 @@ const {
   setEmployeeTasks,
   getEmployeeData,
   updateEmployeeData,
-  getCurrentDayChartData
+  getCurrentDayChartData,
+  updateTasks,
+  deleteTasks
 } = require('../database')
 
 const conn = mysql.createConnection({
@@ -26,13 +28,15 @@ router
     let username = req.session.username
     const data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
-    console.log(workData, breakData, meetingData)
+    const tasks = req.flash('data')
+    if(tasks.length > 0) tasks[0].date = new Date(tasks[0].date) 
+    // console.log(workData, breakData, meetingData)
     res.render('EmployeeDashboard', {
       data: data ? data : {},
       data1: workData,
       data2: breakData,
       data3: meetingData,
-      tasks: {}
+      tasks: tasks ? tasks : {}
     })
   })
   .post(async (req, res) => {
@@ -41,7 +45,6 @@ router
     let tasks = await getEmployeeTasks(find_task_date, username)
     let data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
-    console.log(tasks)
     if (tasks === null) {
       res.redirect('/employee/dashboard')
     } else {
@@ -66,12 +69,15 @@ router
   })
   .post(async (req, res) => {
 
-    let updatedData = req.body;
+    let updatedData = {
+      data: req.body,
+      prevUsername: req.session.username
+    }
 
     await updateEmployeeData(updatedData)
     req.session.username = req.body.username
     console.log(req.session.username)
-    res.redirect('/employee/updateEmployee')
+    res.redirect('/employee/dashboard')
   });
 
 router
@@ -96,38 +102,29 @@ router
 
 router
   .route('/deleteTask')
-  .post((req, res) => {
-    let desc = req.body.desc;
-    let type = req.body.type;
-    let st_time = req.body.st_time;
-    let time = req.body.time;
-    console.log(desc, type, st_time, time)
-    conn.query(`DELETE FROM tasks WHERE (task_description='${desc}') AND (task_type='${type}') AND (start_time='${st_time}')`, (err, rows) => {
-      if (err) throw err;
-      console.log('Data deleted');
-    });
+  .post(async (req, res) => {
+
+    let deleteData = {
+      data: req.body,
+      username: req.session.username
+    }
+    // console.log(req.body)
+    await deleteTasks(deleteData)
     res.redirect('/employee/dashboard');
   });
 
 router
   .route('/updateTask')
-  .post((req, res) => {
-    let desc = req.body.udesc;
-    let type = req.body.utype;
-    let st_time = req.body.ust_time;
-    let time_taken = req.body.utime_taken;
-    let prevDesc = req.body.prevDesc;
-    console.log(time_taken)
-    conn.query(`UPDATE tasks SET task_description = '${desc}',  task_type = '${type}', start_time= '${st_time}', time_taken = '${time_taken}' WHERE task_description = '${prevDesc}';`, (err, rows) => {
-      if (err) {
-        throw err;
-      }
-      else {
-        console.log('Task updated');
-      }
-    });
-    res.redirect('/employee/dashboard');
-  });
+  .post(async (req, res) => {
+    let updateData = {
+      data: req.body,
+      username: req.session.username
+    }
+    console.log(req.body)
+    let data = await updateTasks(updateData)
+    if(!(updateData.data.prevDate === undefined)) req.flash('data', data)
+    res.redirect('/employee/dashboard')
+  })
 
 router
   .route('/logout')
