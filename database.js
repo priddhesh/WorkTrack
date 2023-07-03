@@ -67,11 +67,9 @@ const getEmployeeTasks = async (date, username) => {
 
 const setEmployeeTasks = async ({username, desc, type, time_taken, st_time, date}) => {
     try {
-
-        const [data] = await pool.execute('INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username) VALUES(?,?,?,?,?,?)',[desc, type, date, st_time, time_taken, username])
-        
-        
-
+        const [department] = await pool.execute('SELECT dept FROM employee_info WHERE username = ?', [username])
+        let dept = department[0].dept;
+        const [data] = await pool.execute('INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username,dept) VALUES(?,?,?,?,?,?,?)',[desc, type, date, st_time, time_taken, username,dept])
     } catch(err) {
         console.log(err)
     }
@@ -93,7 +91,7 @@ const getEmployeeData = async (username) => {
 
 }
 
-const updateEmployeeData = async (data) => {
+const updateEmployeeData = async (data,user) => {
     
     let { email, username, department, contact, checkval, new_password } = data
 
@@ -101,6 +99,7 @@ const updateEmployeeData = async (data) => {
 
         if(checkval === undefined) {
             await pool.execute(`UPDATE employee_info SET username = ?, dept = ?, contact= ? WHERE email = ?`,[username, department, contact, email])
+            await pool.execute(`UPDATE tasks SET username = ? WHERE username = ?`, [username, user])
 
         } else { 
             await pool.execute(`UPDATE employee_info SET username = ?, dept = ?, contact= ?, password = ? WHERE email = ?`,[username, department, contact, new_password, email])

@@ -67,8 +67,8 @@ router
   .post(async (req, res) => {
 
     let updatedData = req.body;
-
-    await updateEmployeeData(updatedData)
+    let prevUsername = req.session.username
+    await updateEmployeeData(updatedData,prevUsername)
     req.session.username = req.body.username
     console.log(req.session.username)
     res.redirect('/employee/updateEmployee')

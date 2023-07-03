@@ -22,7 +22,14 @@ router
         throw err;
       }
       else {
-        res.render('AdminDashboard', { data: data });
+        conn.query(`SELECT * from tasks`, (err, data1) => {
+          if (err) {
+            throw err;
+          }
+          else {
+            res.render('AdminDashboard', { data: data, data1: data1 });
+          }
+        });
       }
     });
   })
@@ -57,14 +64,24 @@ router.post('/deactivate', (req, res) => {
     subject: 'Account Deactivated',
     text: `Your account has been deactivated by the admin.\n\nRegards,\nAdmin`
   }
-  conn.query(`DELETE FROM employee_info WHERE email='${email}'`, (err, rows) => {
+  conn.query(`SELECT username FROM employee_info WHERE email='${email}'`, (err, name) => {
     if (err) throw err;
     else {
-      sendMail(mailOptions)
-      console.log('Data deleted');
+      conn.query(`DELETE FROM employee_info WHERE email='${email}'`, (err, rows) => {
+        if (err) throw err;
+        else {
+          conn.query(`DELETE FROM tasks WHERE username='${name[0].username}'`, (err, rows) => {
+            if (err) throw err;
+            else {
+              console.log(name[0].username);
+              sendMail(mailOptions);
+            }
+          });
+        }
+      });
     }
+    res.redirect('/admin/addEmployee');
   });
-  res.redirect('/admin/addEmployee');
 });
 
 router
