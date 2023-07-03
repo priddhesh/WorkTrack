@@ -8,6 +8,7 @@ const {
   setEmployeeTasks,
   getEmployeeData,
   updateEmployeeData,
+  getCurrentDayChartData
 } = require('../database')
 
 const conn = mysql.createConnection({
@@ -22,22 +23,35 @@ router.use(empAuth)
 router
   .route('/dashboard')
   .get(async (req, res) => {
-
     let username = req.session.username
     const data = await getCurrentDayTasks(username)
-    console.log(data)
-    res.render('EmployeeDashboard', { data: data ? data : {}, tasks: {} })
+    const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
+    console.log(workData, breakData, meetingData)
+    res.render('EmployeeDashboard', {
+      data: data ? data : {},
+      data1: workData,
+      data2: breakData,
+      data3: meetingData,
+      tasks: {}
+    })
   })
   .post(async (req, res) => {
     let { find_task_date } = req.body
     let { username } = req.session
     let tasks = await getEmployeeTasks(find_task_date, username)
     let data = await getCurrentDayTasks(username)
+    const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
     console.log(tasks)
     if (tasks === null) {
       res.redirect('/employee/dashboard')
     } else {
-      res.render('EmployeeDashboard', { data: data, tasks: tasks })
+      res.render('EmployeeDashboard', {
+        data: data ? data : {},
+        data1: workData,
+        data2: breakData,
+        data3: meetingData,
+        tasks: tasks,
+      })
     }
   })
 
@@ -115,7 +129,7 @@ router
     res.redirect('/employee/dashboard');
   });
 
-router 
+router
   .route('/logout')
   .get((req, res) => {
     req.session.destroy()

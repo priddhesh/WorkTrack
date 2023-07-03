@@ -113,6 +113,27 @@ const updateEmployeeData = async (data) => {
 
 }
 
+const getCurrentDayChartData = async (username) => {
+
+    let date = new Date()
+    date = date.toISOString().split('T')[0]
+    console.log(date)
+    
+    try {
+
+        const [workData] = await pool.execute(`SELECT time_taken FROM tasks WHERE date = ? AND username = ? AND task_type='Work'`, [date, username])
+
+        const [breakData] = await pool.execute(`SELECT time_taken FROM tasks WHERE date = ? AND username = ? AND task_type='Break'`, [date, username])
+
+        const [meetingData] = await pool.execute(`SELECT time_taken FROM tasks WHERE date = ? AND username = ? AND task_type='Meeting'`, [date, username])
+
+        return {workData, breakData, meetingData}
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 module.exports = { 
     authenticate, 
     pool,
@@ -121,4 +142,5 @@ module.exports = {
     setEmployeeTasks,
     getEmployeeData,
     updateEmployeeData,
+    getCurrentDayChartData,
  }
