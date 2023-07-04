@@ -123,6 +123,8 @@
                 <th scope="col">Contact</th>
                 <th scope="col">Department</th>
                 <th scope="col">Join Date</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -135,7 +137,7 @@
                     <th scope="row">
                         <%= i %>
                     </th>
-                    <td>
+                    <td id="username<%=i%>">
                         <%= item.username %>
                     </td>
                     <td>
@@ -149,6 +151,32 @@
                     </td>
                     <td>
                         <%= item.join_date.toString().substring(0,15) %>
+                    </td>
+                    <td>
+                      <form action="/admin/viewTasks" method="post">
+                        <input style="display: none;" type="text" name="username" id="uname<%=i%>" value="<%= item.username%>">
+                        <button id="t<%=i%>" type="submit" class="btn btn-primary">Tasks</button>
+                      </form>
+                    </td>
+                    <td>
+                        <button onclick="indStats(this.id)" id="<%=i%>" type="button" class="btn btn-success" data-toggle="modal" data-target=".bd-example-modal-lg00">View Stats
+                        </button>
+                        <div class="modal fade bd-example-modal-lg00" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel1"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myLargeModalLabel00"></h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">x</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="myDiv3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <% }) }else{ %>

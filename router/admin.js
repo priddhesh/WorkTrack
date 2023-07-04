@@ -73,7 +73,6 @@ router.post('/deactivate', (req, res) => {
           conn.query(`DELETE FROM tasks WHERE username='${name[0].username}'`, (err, rows) => {
             if (err) throw err;
             else {
-              console.log(name[0].username);
               sendMail(mailOptions);
             }
           });
@@ -82,6 +81,22 @@ router.post('/deactivate', (req, res) => {
     }
     res.redirect('/admin/addEmployee');
   });
+});
+
+
+router
+  .route('/viewTasks')
+  .post((req, res) => {
+    let username = req.body.username;
+    console.log(username);
+    conn.query(`SELECT * from tasks WHERE username = '${username}' ORDER BY date DESC`, (err, data) => {
+      if (err) {
+        throw err;
+      }
+      else {
+        res.render('EmployeeTasks', { data: data });
+      }
+    });
 });
 
 router
