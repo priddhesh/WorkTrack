@@ -13,12 +13,16 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#exampleModal">
+    <div style="background-color: rgb(149, 149, 251);" class="container-fluid p-2">
+        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal">
             Add Task
         </button>
-        <a href="/employee/updateEmployee" class="btn btn-secondary m-2">Update Profile</a>
-        <a href="/employee/logout" class="btn btn-danger m-2">Logout</a>
+        <button id="1000" type="submit" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg1000">View
+            Graph</button>
+        <a href="/employee/updateEmployee" class="btn btn-secondary btn-sm">Update Profile</a>
+        <a href="/employee/logout" class="btn btn-danger float-lg-right btn-sm">Logout</a>
+        <span style="background-color: rgb(139, 232, 232); border-radius: 10px;"
+            class="float-lg-right px-2 p-1 mx-3">Welcome <%=data[0].username%></span>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -65,9 +69,6 @@
             </div>
         </div>
     </div>
-
-    <button id="1000" type="submit" class="btn btn-primary" data-toggle="modal"
-        data-target=".bd-example-modal-lg1000">View Graph</button>
 
     <div class="modal fade bd-example-modal-lg1000" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel1"
         aria-hidden="true">
