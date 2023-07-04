@@ -1,7 +1,7 @@
+require('dotenv').config()
 const mysql = require('mysql2')
 const dotenv = require('dotenv')
 const moment = require('moment')
-dotenv.config()
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_URI,
@@ -70,8 +70,8 @@ const setEmployeeTasks = async ({ username, desc, type, time_taken, st_time, dat
     try {
         const [department] = await pool.execute('SELECT dept FROM employee_info WHERE username = ?', [username])
         let dept = department[0].dept;
-        const [data] = await pool.execute('INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username,dept) VALUES(?,?,?,?,?,?,?)',[desc, type, date, st_time, time_taken, username,dept])
-    } catch(err) {
+        const [data] = await pool.execute('INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username,dept) VALUES(?,?,?,?,?,?,?)', [desc, type, date, st_time, time_taken, username, dept])
+    } catch (err) {
         console.log(err)
     }
 }
@@ -192,7 +192,7 @@ const deleteTasks = async (deleteData) => {
 
     try {
 
-        if(date === undefined) {
+        if (date === undefined) {
 
             let date = new Date()
             date = date.toISOString().split('T')[0]
@@ -200,8 +200,8 @@ const deleteTasks = async (deleteData) => {
             await pool.execute(`DELETE FROM tasks WHERE username = ? AND task_description = ? AND task_type = ? AND start_time = ? AND time_taken = ? AND date = ?`, [username, desc, type, st_time, time, date])
 
             console.log(desc, type, st_time, time, date)
-          
-        } else { 
+
+        } else {
 
             date = moment(date, 'ddd MMM DD YYYY').format('YYYY-MM-DD')
 
@@ -211,7 +211,7 @@ const deleteTasks = async (deleteData) => {
 
         console.log('Task deleted')
 
-    } catch (err) { 
+    } catch (err) {
         console.log(err)
     }
 
@@ -226,8 +226,6 @@ module.exports = {
     getEmployeeData,
     updateEmployeeData,
     getCurrentDayChartData,
-    updateTasks, 
+    updateTasks,
     deleteTasks
 }
-
-module.exports = { authenticate }
