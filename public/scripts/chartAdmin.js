@@ -40,7 +40,7 @@ var data = [{
 
 var layout = {
     height: 400,
-    width: 500
+    width: 500,
 };
 
 Plotly.newPlot('myDiv1', data, layout);
