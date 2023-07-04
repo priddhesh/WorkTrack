@@ -29,7 +29,11 @@ router
     const data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
     const tasks = req.flash('data')
-    if(tasks.length > 0) tasks[0].date = new Date(tasks[0].date) 
+    if(tasks.length > 0) {
+      tasks.forEach(task => {
+        task.date = new Date(task.date) 
+      });
+    }
     res.render('EmployeeDashboard', {
       data: data ? data : {},
       data1: workData,
@@ -118,8 +122,9 @@ router
       data: req.body,
       username: req.session.username
     }
-    console.log(req.body)
+    // console.log(req.body)
     let data = await updateTasks(updateData)
+    // console.log(data)
     if(!(updateData.data.prevDate === undefined)) req.flash('data', data)
     res.redirect('/employee/dashboard')
   })

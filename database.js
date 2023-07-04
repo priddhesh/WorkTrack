@@ -163,8 +163,7 @@ const updateTasks = async (updatedTask) => {
 
             console.log('Task updated')
 
-            const [data] = await getEmployeeTasks(date, username)
-            return data
+            return []
 
         } else {
 
@@ -174,7 +173,8 @@ const updateTasks = async (updatedTask) => {
 
             console.log('Task updated')
 
-            const [data] = await getEmployeeTasks(date, username)
+            const data = await getEmployeeTasks(date, username)
+            console.log(data)
             return data
 
         }
