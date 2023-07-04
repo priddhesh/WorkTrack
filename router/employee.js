@@ -53,6 +53,7 @@ router
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
     if (tasks === null) {
       req.session.visited = true
+      req.session.prevData = []
       res.redirect('/employee/dashboard')
     } else {
       req.session.visited = false
