@@ -229,3 +229,5 @@ module.exports = {
     updateTasks, 
     deleteTasks
 }
+
+module.exports = { authenticate }
