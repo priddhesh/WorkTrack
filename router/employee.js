@@ -28,18 +28,21 @@ router
     let username = req.session.username
     const data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
-    const tasks = req.flash('data')
-    if(tasks.length > 0) {
+    let tasks = req.session.prevData //req.flash('data')
+    // console.log(tasks)
+    if(!(tasks === undefined) && tasks.length > 0) {
       tasks.forEach(task => {
         task.date = new Date(task.date) 
       });
     }
+    console.log(req.session.visited)
     res.render('EmployeeDashboard', {
       data: data ? data : {},
       data1: workData,
       data2: breakData,
       data3: meetingData,
-      tasks: tasks ? tasks : {}
+      tasks: tasks ? tasks : [],
+      visited: req.session.visited === undefined ? false : req.session.visited
     })
   })
   .post(async (req, res) => {
@@ -49,14 +52,18 @@ router
     let data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
     if (tasks === null) {
+      req.session.visited = true
       res.redirect('/employee/dashboard')
     } else {
+      req.session.visited = false
+      req.session.prevData = tasks
       res.render('EmployeeDashboard', {
         data: data ? data : {},
         data1: workData,
         data2: breakData,
         data3: meetingData,
         tasks: tasks,
+        visited: false
       })
     }
   })
@@ -125,7 +132,9 @@ router
     // console.log(req.body)
     let data = await updateTasks(updateData)
     // console.log(data)
-    if(!(updateData.data.prevDate === undefined)) req.flash('data', data)
+    if(updateData.data.prevDate !== undefined) { // req.flash('data', data)
+      req.session.prevData = data
+    }
     res.redirect('/employee/dashboard')
   })
 
