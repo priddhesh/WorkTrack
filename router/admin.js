@@ -17,6 +17,7 @@ router.use(adminAuth)
 router
   .route('/addEmployee')
   .get((req, res) => {
+    let username = req.session.username;
     conn.query(`SELECT * from employee_info`, (err, data) => {
       if (err) {
         throw err;
@@ -27,7 +28,7 @@ router
             throw err;
           }
           else {
-            res.render('AdminDashboard', { data: data, data1: data1 });
+            res.render('AdminDashboard', { data: data, data1: data1,admin: username });
           }
         });
       }

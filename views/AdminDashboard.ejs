@@ -12,11 +12,17 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    <div style="background-color: rgb(149, 149, 251);" class="container-fluid p-2">
+        <button type="button" class="btn btn-primary btn-sm mx-3" data-toggle="modal" data-target="#exampleModal">
             Add Employee
         </button>
-        <a href="/admin/logout" class="btn btn-danger m-2">Logout</a>
+        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+            data-target=".bd-example-modal-lg9">Deactivate
+        </button>
+        <a href="/admin/logout" class="btn btn-danger float-lg-right btn-sm">Logout</a>
+        <div style="background-color: rgb(139, 232, 232); border-radius: 10px;" class="float-lg-right px-2 p-1 mx-3">
+            <span style="font-weight: bold; color: rgb(61, 61, 61);">Welcome <%=admin%>!</span>
+        </div>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -69,9 +75,6 @@
             </div>
         </div>
     </div>
-
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".bd-example-modal-lg9">Deactivate
-    </button>
 
     <div class="modal fade bd-example-modal-lg9" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel1"
         aria-hidden="true">
