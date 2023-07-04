@@ -68,12 +68,10 @@ const getEmployeeTasks = async (date, username) => {
 
 const setEmployeeTasks = async ({ username, desc, type, time_taken, st_time, date }) => {
     try {
-
-        const [data] = await pool.execute('INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username) VALUES(?,?,?,?,?,?)', [desc, type, date, st_time, time_taken, username])
-
-
-
-    } catch (err) {
+        const [department] = await pool.execute('SELECT dept FROM employee_info WHERE username = ?', [username])
+        let dept = department[0].dept;
+        const [data] = await pool.execute('INSERT INTO  tasks(task_description,task_type,date,start_time,time_taken,username,dept) VALUES(?,?,?,?,?,?,?)',[desc, type, date, st_time, time_taken, username,dept])
+    } catch(err) {
         console.log(err)
     }
 }
