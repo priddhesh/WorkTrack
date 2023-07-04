@@ -133,5 +133,37 @@ function deptStats(e)
     Plotly.newPlot('myDiv2', data2, layout2);
 }
 
+function indStats(e)
+{
+    document.getElementById("myLargeModalLabel00").innerText = `${document.getElementById(`username${e}`).innerText}'s tasks for ${monthList[month]}, ${date.getFullYear()}`;
+    let username = document.getElementById(`username${e}`).innerText;
+    let indWork = 0,indMeeting = 0,indBreaks = 0;
+    statistics.forEach((stat) => {
+        let monthVal = parseInt(stat.date.substring(5, 7));
+        if(stat.username===username && monthList[monthVal - 1] == monthList[month]){
+            if(stat.task_type==="Work"){
+                indWork+=stat.time_taken;
+            }else if(stat.task_type==="Meeting"){
+                indMeeting+=stat.time_taken;
+            }else if(stat.task_type==="Break"){
+                indBreaks+=stat.time_taken;
+            }
+        }
+    });
+
+    var data = [
+        {
+            x: ["work", "meeting", "breaks"],
+            y: [indWork, indMeeting, indBreaks],
+            type: 'bar'
+        }
+    ];
+
+    var layout = {
+        height: 400,
+        width: 500
+    };
 
 
+    Plotly.newPlot('myDiv3', data, layout);
+}
