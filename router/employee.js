@@ -13,12 +13,12 @@ const {
   deleteTasks
 } = require('../database')
 
-const conn = mysql.createConnection({
-  host: process.env.MYSQL_URI,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_USER
-});
+// const conn = mysql.createConnection({
+//   host: process.env.MYSQL_URI,
+//   user: process.env.MYSQL_USER,
+//   password: process.env.MYSQL_PASSWORD,
+//   database: process.env.MYSQL_USER
+// });
 
 router.use(empAuth)
 
@@ -30,7 +30,6 @@ router
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
     const tasks = req.flash('data')
     if(tasks.length > 0) tasks[0].date = new Date(tasks[0].date) 
-    // console.log(workData, breakData, meetingData)
     res.render('EmployeeDashboard', {
       data: data ? data : {},
       data1: workData,
@@ -108,7 +107,6 @@ router
       data: req.body,
       username: req.session.username
     }
-    // console.log(req.body)
     await deleteTasks(deleteData)
     res.redirect('/employee/dashboard');
   });
