@@ -337,17 +337,16 @@
             <input type="text" id="pddate" name="date" />
         </form>
     </div>
-
     <div style="display: none;">
         <% let work=0; let meeting=0; let brk=0; if (true) { %>
             <% data1.forEach(function(data) { %>
                 <% work +=data.time_taken; %>
             <% }); %>
             <% data2.forEach(function(data) { %>
-                <% meeting +=data.time_taken; %>
+                <% brk +=data.time_taken; %>
             <% }); %>
             <% data3.forEach(function(data) { %>
-                <% brk +=data.time_taken; %>
+                <% meeting +=data.time_taken; %>
             <% }); %>
         <%} else { %>
         <% } %>

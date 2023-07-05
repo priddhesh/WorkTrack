@@ -34,7 +34,6 @@ router
         task.date = new Date(task.date)
       });
     }
-    console.log(data);
     res.render('EmployeeDashboard', {
       data: data ? data : {},
       data1: workData,
@@ -51,6 +50,7 @@ router
     let tasks = await getEmployeeTasks(find_task_date, username)
     let data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
+    console.log(workData+ " "+ breakData+ " "+ meetingData);
     if (tasks === null) {
       req.session.visited = true
       req.session.prevData = []
