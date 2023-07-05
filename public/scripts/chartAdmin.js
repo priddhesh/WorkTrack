@@ -167,3 +167,6 @@ function indStats(e)
 
     Plotly.newPlot('myDiv3', data, layout);
 }
+
+var today = new Date().toISOString().split('T')[0];
+document.getElementsByName("join_date")[0].setAttribute('max', today);
