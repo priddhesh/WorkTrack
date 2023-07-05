@@ -43,7 +43,6 @@ const getCurrentDayTasks = async (username) => {
     todayDate = todayDate.toISOString().split('T')[0]
     try {
         const [data] = await pool.execute(`SELECT * from tasks WHERE date= ? AND username = ?`, [todayDate, username])
-
         if (data.length > 0) return data
         else return null
     }
