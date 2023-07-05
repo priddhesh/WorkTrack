@@ -35,14 +35,14 @@ router
         task.date = new Date(task.date)
       });
     }
-    console.log(req.session.visited)
     res.render('EmployeeDashboard', {
       data: data ? data : {},
       data1: workData,
       data2: breakData,
       data3: meetingData,
       tasks: tasks ? tasks : [],
-      visited: req.session.visited === undefined ? false : req.session.visited
+      visited: req.session.visited === undefined ? false : req.session.visited,
+      username: username
     })
   })
   .post(async (req, res) => {
