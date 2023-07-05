@@ -12,7 +12,7 @@
     <script src='https://cdn.plot.ly/plotly-2.24.1.min.js'></script>
 </head>
 
-<body>
+<body style="background-color: hsl(0, 0%, 96%);">
     <div style="background-color: rgb(149, 149, 251);" class="container-fluid p-2">
         <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal">
             Add Task
@@ -88,6 +88,9 @@
     </div>
 
     <table class="table">
+        <h4 style="color: rgb(85, 85, 85);" class="text-center p-2">
+            Today's Tasks 
+        </h4>
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -203,11 +206,11 @@
 
     <div class="text-center m-3 p-3">
         <% if(tasks.length>0) { %>
-            <h2>
+            <h4 style="color: rgb(85, 85, 85);">
                 Tasks on <%= tasks[0].date.toDateString() %>
-            </h2>
+            </h4>
             <% } else if (visited === true) { %>
-                <h2>No tasks on this date.</h2>
+                <h4 style="color: rgb(85, 85, 85);">No tasks on this date.</h4>
                 <% } else {%>
                 <h2></h2>
                 <% } %>
@@ -221,7 +224,6 @@
                     <th scope="col">Type of Work</th>
                     <th scope="col">Start Time</th>
                     <th scope="col">Time Taken</th>
-                    <th scope="col">Date</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                 </tr>
@@ -252,9 +254,6 @@
                                 </td>
                                 <td id="prevTime-<%=i%>">
                                     <%= task.time_taken %>
-                                </td>
-                                <td id="prevDate-<%=i%>">
-                                    <%= task.date.toDateString() %>
                                 </td>
                                 <td>
 
