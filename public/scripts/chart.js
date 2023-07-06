@@ -9,8 +9,12 @@ var layout = {
     width: 500
 };
 
-console.log(document.getElementById('work').innerText)
+if (document.getElementById('work').innerText==0 && document.getElementById('meeting').innerText==0  && document.getElementById('break').innerText==0)
+{
+     document.getElementById('myDiv').innerHTML = `<h4>No data found</h4>`
+}else{
 Plotly.newPlot('myDiv', data, layout);
+}
 
 const yesterday = new Date();
 yesterday.setDate(yesterday.getDate() - 1);

@@ -38,7 +38,6 @@ function remove(e)
 }
 
 function edit(e) {
-  // console.log(e)
   let prevDesc =  document.getElementById(`prevDesc-${e}`).innerText;
   let prevType = document.getElementById(`prevType-${e}`).innerText;
   let prevSt_time = document.getElementById(`prevSt_time-${e}`).innerText;
@@ -50,22 +49,19 @@ function edit(e) {
   document.getElementById(`modalPrevTime-${e}`).value = prevTime;
   document.getElementById(`modalNewPrevSt_time-${e}`).value = prevSt_time;
   document.getElementById(`modalPrevDate-${e}`).value = prevDate;
-
-  console.log(prevDate)
 }
 
 function del(e) {
+  console.log(1);
   let prevDesc =  document.getElementById(`prevDesc-${e}`).innerText;
   let prevType = document.getElementById(`prevType-${e}`).innerText;
   let prevSt_time = document.getElementById(`prevSt_time-${e}`).innerText;
   let prevTime = document.getElementById(`prevTime-${e}`).innerText;
-  let prevDate = document.getElementById(`prevDate-${e}`).innerText;
 
   document.getElementById("pddesc").value = prevDesc;
   document.getElementById("pdtype").value = prevType;
   document.getElementById("pdst_time").value = prevSt_time;
   document.getElementById("pdtime").value = prevTime;
-  document.getElementById("pddate").value = prevDate;
 
   document.getElementById("deletePrevData").submit();
 }
