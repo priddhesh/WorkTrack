@@ -130,9 +130,8 @@ router
       username: req.session.username
     }
     let data = await deleteTasks(deleteData)
-
     if (deleteData.data.date !== undefined) {
-      req.session.prevData = data
+      req.session.prevData = data;
     }
     res.redirect('/employee/dashboard');
   });
@@ -148,7 +147,7 @@ router
     let data = await updateTasks(updateData)
     // console.log(data)
     if (updateData.data.prevDate !== undefined) { // req.flash('data', data)
-      req.session.prevData = data
+       req.session.prevData = data
     }
     res.redirect('/employee/dashboard')
   })
