@@ -29,19 +29,22 @@ router
     const data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
     let tasks = req.session.prevData //req.flash('data')
-    if (!(tasks === undefined) && tasks.length > 0) {
+    // console.log(tasks)
+    console.log(tasks)
+    if (tasks !== null && tasks !== undefined && tasks.length > 0) {
       tasks.forEach(task => {
         task.date = new Date(task.date)
       });
     }
+    // console.log(req.session.visited)
     res.render('EmployeeDashboard', {
+      username: username,
       data: data ? data : {},
       data1: workData,
       data2: breakData,
       data3: meetingData,
       tasks: tasks ? tasks : [],
-      visited: req.session.visited === undefined ? false : req.session.visited,
-      username: username
+      visited: req.session.visited === undefined ? false : req.session.visited
     })
   })
   .post(async (req, res) => {
@@ -50,7 +53,6 @@ router
     let tasks = await getEmployeeTasks(find_task_date, username)
     let data = await getCurrentDayTasks(username)
     const { workData, breakData, meetingData } = await getCurrentDayChartData(username)
-    console.log(workData+ " "+ breakData+ " "+ meetingData);
     if (tasks === null) {
       req.session.visited = true
       req.session.prevData = []
@@ -59,13 +61,13 @@ router
       req.session.visited = false
       req.session.prevData = tasks
       res.render('EmployeeDashboard', {
+        username: username,
         data: data ? data : {},
         data1: workData,
         data2: breakData,
         data3: meetingData,
         tasks: tasks,
-        visited: false,
-        username: username
+        visited: false
       })
     }
   })
@@ -120,7 +122,11 @@ router
       data: req.body,
       username: req.session.username
     }
-    await deleteTasks(deleteData)
+    let data = await deleteTasks(deleteData)
+
+    if (deleteData.data.date !== undefined) {
+      req.session.prevData = data
+    }
     res.redirect('/employee/dashboard');
   });
 
