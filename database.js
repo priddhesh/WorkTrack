@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     host: process.env.MYSQL_URI,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_USER
+    database: process.env.MYSQL_DB
 }).promise()
 
 const authenticate = async (username, password, role) => {
@@ -218,6 +218,52 @@ const deleteTasks = async (deleteData) => {
 
 }
 
+const addLeave = async(leaveData)=>{
+    let { data, username } = leaveData
+    let { reason, from, to} = data
+    let status = 'pending';
+
+    try{
+        await pool.execute('INSERT INTO leave_info(username,reason,from_date,to_date,status) VALUES(?,?,?,?,?)', [username, reason, from, to, status])
+
+    }catch(err){
+        console.log(err);
+    }
+}
+
+const getApplications = async(data)=>{
+    try{
+        const [val] = await pool.execute(`SELECT * FROM leave_info WHERE username = ?`, [data]); 
+        return val;
+    }catch(err)
+    {
+        console.log(err);
+    }
+}
+
+const deleteRequest = async (data) => {
+    try {
+       let username = data.username;
+       let reason = data.reason;
+       await pool.execute(`DELETE FROM leave_info WHERE username = ? AND reason = ?`, [username,reason]);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const updateApplication = async (data,username) => {
+    try {
+        let uname = username;
+        let reason = data.ureason;
+        let from = data.ufrom;
+        let to = data.uto;
+        let prevReason = data.reason;
+        await pool.execute(`UPDATE leave_info SET reason = ?, from_date = ?, to_date= ? WHERE username = ? AND reason = ?`, [reason, from, to,uname,prevReason])
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
     authenticate,
     pool,
@@ -228,5 +274,9 @@ module.exports = {
     updateEmployeeData,
     getCurrentDayChartData,
     updateTasks,
-    deleteTasks
+    deleteTasks,
+    addLeave,
+    getApplications,
+    deleteRequest,
+    updateApplication
 }

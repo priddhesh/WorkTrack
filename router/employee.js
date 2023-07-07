@@ -12,7 +12,11 @@ const {
   updateEmployeeData,
   getCurrentDayChartData,
   updateTasks,
-  deleteTasks
+  deleteTasks,
+  addLeave,
+  getApplications,
+  deleteRequest,
+  updateApplication
 } = require('../database')
 
 // const conn = mysql.createConnection({
@@ -94,6 +98,14 @@ router
     res.redirect('/employee/dashboard')
   });
 
+  router
+  .route('/applications')
+  .get(async (req, res) => {
+    let username = req.session.username;
+    const data = await getApplications(username);
+    res.render('EmployeeApplications',{data: data});
+  })
+
 router
   .route('/addTask')
   .post(async (req, res) => {
@@ -120,6 +132,7 @@ router
 
     res.redirect('/employee/dashboard');
   });
+
 
 router
   .route('/deleteTask')
@@ -150,6 +163,34 @@ router
        req.session.prevData = data
     }
     res.redirect('/employee/dashboard')
+  })
+
+router
+  .route('/addLeave')
+  .post(async (req, res) => {
+    let leaveData = {
+      data: req.body,
+      username: req.session.username
+    }
+    let data = await addLeave(leaveData);
+    res.redirect('/employee/dashboard')
+  })
+
+router
+  .route('/deleteApplication')
+  .post(async (req, res) => {
+    let data = req.body;
+    await deleteRequest(data);
+    res.redirect('/employee/applications');
+  })
+
+router
+  .route('/updateApplication')
+  .post(async (req, res) => {
+    let username = req.session.username;
+    let data = req.body;
+    await updateApplication(data,username);
+    res.redirect('/employee/applications');
   })
 
 router

@@ -9,7 +9,7 @@ const conn = mysql.createConnection({
   host: process.env.MYSQL_URI,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_USER
+  database: process.env.MYSQL_DB
 });
 
 router.use(adminAuth)
@@ -28,7 +28,19 @@ router
             throw err;
           }
           else {
-            res.render('AdminDashboard', { data: data, data1: data1,admin: username });
+            conn.query(`SELECT from_date FROM leave_info WHERE status = 'pending'`, (err, data2) => {
+              if (err) {
+                throw err;
+              }
+              else {
+                let count = 0;
+                data2.forEach(element => {
+                  count++;
+                });
+                console.log(count);
+                res.render('AdminDashboard', { data: data, data1: data1, admin: username ,count: count});
+              }
+            });
           }
         });
       }
@@ -84,6 +96,19 @@ router.post('/deactivate', (req, res) => {
   });
 });
 
+router
+  .route('/notifications')
+  .get(async (req, res) => {
+
+    conn.query(`SELECT * from leave_info`, (err, data) => {
+      if (err) {
+        throw err;
+      }
+      else {
+        res.render('Notifications', { data: data })
+      }
+  })
+});
 
 router
   .route('/viewTasks')
@@ -95,10 +120,47 @@ router
         throw err;
       }
       else {
-        res.render('EmployeeTasks', { data: data });
+        if(data!= null || data!= undefined )
+        {
+          res.render('EmployeeTasks', { data: data });
+        }else{
+          res.render('EmployeeTasks', { data: [] });
+        }
       }
     });
 });
+
+router
+  .route('/approve')
+  .post((req, res) => {
+    let username = req.body.username;
+    let reason = req.body.reason;
+    let status = 'approved';
+    conn.query(`UPDATE leave_info SET status = '${status}' WHERE username = '${username}' AND reason = '${reason}'`, (err, data) => {
+      if (err) {
+        throw err;
+      }
+      else {
+        res.redirect('/admin/notifications');
+      }
+    });
+  });
+
+router
+  .route('/reject')
+  .post((req, res) => {
+    let username = req.body.username;
+    let reason = req.body.reason;
+    let status = 'rejected';
+    conn.query(`UPDATE leave_info SET status = '${status}' WHERE username = '${username}' AND reason = '${reason}'`, (err, data) => {
+      if (err) {
+        throw err;
+      }
+      else {
+        res.redirect('/admin/notifications');
+      }
+    });
+  });
 
 router
   .route('/logout')

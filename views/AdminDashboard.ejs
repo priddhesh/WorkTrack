@@ -9,6 +9,9 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="/scripts/chartAdmin.js" defer></script>
     <script src='https://cdn.plot.ly/plotly-2.24.1.min.js'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -23,6 +26,12 @@
         <div style="background-color: rgb(139, 232, 232); border-radius: 10px;" class="float-lg-right px-2 p-1 mx-3">
             <span style="font-weight: bold; color: rgb(61, 61, 61);">Welcome <%=admin%>!</span>
         </div>
+        <span>
+            <a style="text-decoration: none; margin-left: 1.5%;" href="/admin/notifications" role="button">
+                <i style="color: black;" class="fas fa-bell"></i>
+                <span style="background-color: rgb(215, 252, 252);" class="badge rounded-pill badge-notification"><%=count%></span>
+            </a>
+        </span>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -118,7 +127,7 @@
     </div>
     
     <table class="table" style="background-color: hsl(0, 0%, 96%);">
-        <thead>
+        <thead style="background-color: rgb(179, 179, 253);">
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Username</th>

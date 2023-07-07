@@ -20,6 +20,16 @@
         <button id="1000" type="submit" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg1000">View
             Graph</button>
         <a href="/employee/updateEmployee" class="btn btn-secondary btn-sm">Update Profile</a>
+        <span class="dropdown">
+            <button style="color: blue;" class="btn dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                More Options
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a data-toggle="modal" data-target="#exampleModal00000">Apple for leave</a>
+                <a href="/employee/applications">Review application</a>
+            </div>
+        </span>
         <a href="/employee/logout" class="btn btn-danger float-lg-right btn-sm">Logout</a>
         <span style="background-color: rgb(139, 232, 232); border-radius: 10px;font-weight: bold;"
             class="float-lg-right px-2 p-1 mx-3">Welcome <%=username%>!</span>
@@ -363,6 +373,42 @@
             <%=brk %>
         </p>
     </div>
+
+    <div class="modal fade" id="exampleModal00000" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leave Application</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/employee/addLeave" method="post">
+                        <div class="form-group">
+                            <label>Leave Reason:</label>
+                            <input type="text" class="form-control" id="reason" name="reason"
+                                placeholder="Enter leave reason">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputState">From:</label>
+                            <input id="from" name="from" type="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>To:</label>
+                            <input id="to" name="to" type="date" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
