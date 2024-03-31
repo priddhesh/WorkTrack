@@ -6,10 +6,11 @@ const adminAuth = require('./adminAuth')
 const { sendMail } = require('../nodemailerConfig')
 
 const conn = mysql.createConnection({
-  host: process.env.MYSQL_URI,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DB
+  host: process.env.MYSQL_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.MYSQL_DOCKER_PORT
 });
 
 router.use(adminAuth)
@@ -86,6 +87,9 @@ router.post('/deactivate', (req, res) => {
           conn.query(`DELETE FROM tasks WHERE username='${name[0].username}'`, (err, rows) => {
             if (err) throw err;
             else {
+              conn.query(`DELETE FROM leave_info WHERE username='${name[0].username}'`, (err, rows) => {
+                if (err) throw err;
+              });
               sendMail(mailOptions);
             }
           });

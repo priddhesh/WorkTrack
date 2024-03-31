@@ -4,10 +4,11 @@ const dotenv = require('dotenv')
 const moment = require('moment')
 
 const pool = mysql.createPool({
-    host: process.env.MYSQL_URI,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DB
+    host: process.env.MYSQL_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port : process.env.MYSQL_DOCKER_PORT
 }).promise()
 
 const authenticate = async (username, password, role) => {
